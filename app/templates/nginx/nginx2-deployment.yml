@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx2-deployment
+  namespace: privado
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx2
+  template:
+    metadata:
+      labels:
+        app: nginx2
+    spec:
+      containers:
+      - name: nginx2
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html
+        configMap:
+          name: nginx2-html
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx2-html
+  namespace: privado
+data:
+  index.html: |
+    <html>
+    <head><title>Nginx 1</title></head>
+    <body>
+      <h1>Hola NGINX2</h1>
+    </body>
+    </html>
+
+---
