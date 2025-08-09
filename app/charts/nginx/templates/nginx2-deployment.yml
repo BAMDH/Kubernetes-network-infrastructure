@@ -1,43 +1,43 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx1-deployment
+  name: {{ .Values.nginx2.name }}-deployment
   namespace: privado
 spec:
-  replicas: 1
+  replicas: {{ .Values.nginx2.replicas }}
   selector:
     matchLabels:
-      app: nginx1
+      app: {{ .Values.nginx2.name }}
   template:
     metadata:
       labels:
-        app: nginx1
+        app: {{ .Values.nginx2.name }}
     spec:
       containers:
-      - name: nginx1
+      - name: {{ .Values.nginx2.name }}
         image: nginx:alpine
         ports:
-        - containerPort: 80
+        - containerPort: {{ .Values.nginx2.port }}
         volumeMounts:
         - name: html
           mountPath: /usr/share/nginx/html
       volumes:
       - name: html
         configMap:
-          name: nginx1-html
+          name: {{ .Values.nginx2.name }}-html
 
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx1-html
+  name: {{ .Values.nginx2.name }}-html
   namespace: privado
 data:
   index.html: |
     <html>
     <head><title>Nginx 1</title></head>
     <body>
-      <h1>Hola NGINX1</h1>
+      <h1>Hola NGINX2</h1>
     </body>
     </html>
 

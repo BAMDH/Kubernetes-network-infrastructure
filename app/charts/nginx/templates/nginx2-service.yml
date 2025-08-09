@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.nginx2.name }}-service
+  namespace: privado
+spec:
+  selector:
+    app: {{ .Values.nginx2.name }}
+  ports:
+    - port: {{ .Values.nginx2.port }}
+      targetPort: {{ .Values.nginx2.port }}
+  type: ClusterIP

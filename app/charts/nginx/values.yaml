@@ -1,0 +1,9 @@
+nginx1:
+  name: nginx1
+  replicaCount: 1
+  port: 80
+
+nginx2:
+  name: nginx2
+  replicaCount: 2
+  port: 80
