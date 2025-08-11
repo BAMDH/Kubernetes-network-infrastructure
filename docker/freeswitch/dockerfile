@@ -1,0 +1,59 @@
+FROM debian:bookworm
+
+RUN apt-get update && apt-get install -y \
+    git build-essential autoconf automake libtool libtool-bin pkg-config wget curl cmake \
+    libssl-dev zlib1g-dev libpcre2-dev libopus-dev libavformat-dev gettext ca-certificates libpq-dev \
+    libtiff-dev libsqlite3-dev libjpeg-dev libasound2-dev libcurl4-openssl-dev libsndfile1-dev libldns-dev libedit-dev liblua5.3-dev libyaml-dev \
+    libspeex-dev libspeexdsp-dev uuid-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/src
+
+# libks
+RUN git clone https://github.com/signalwire/libks.git && \
+    cd libks && mkdir build && cd build && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release && \
+    make -j$(nproc) && \
+    make install || true && ldconfig
+
+# sofia-sip
+RUN git clone https://github.com/freeswitch/sofia-sip.git && \
+    cd sofia-sip && \
+    ./bootstrap.sh -j$(nproc) && \
+    ./configure && \
+    make -j$(nproc) && \
+    make install && \
+    ldconfig
+
+# spandsp
+RUN git clone https://github.com/freeswitch/spandsp.git && \
+    cd spandsp && \
+    ./autogen.sh && \
+    ./configure && \
+    make -j$(nproc) && \
+    make install && \
+    ldconfig
+
+# FreeSWITCH
+RUN git clone https://github.com/signalwire/freeswitch.git
+
+ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
+ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+
+WORKDIR /usr/src/freeswitch
+
+RUN ./bootstrap.sh -j$(nproc) && \
+    sed -i 's/^loadmodule mod_verto/#loadmodule mod_verto/' modules.conf && \
+    ./configure --disable-signalwire && \
+    make -j$(nproc) && \
+    make install
+
+# Usuario freeswitch
+RUN groupadd freeswitch && useradd -r -g freeswitch freeswitch && \
+    chown -R freeswitch:freeswitch /usr/local/freeswitch
+
+EXPOSE 5060/udp 5060/tcp 5080/udp 5080/tcp 16384-32768/udp
+
+USER freeswitch
+
+CMD ["/usr/local/freeswitch/bin/freeswitch", "-nonat"]
