@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: freeswitch-config
+  namespace: privado
+data:
+  event_socket.conf.xml: |
+    <param name="listen-ip" value="0.0.0.0"/>
+
+  # Archivo de usuario SIP
+  users.xml: |
+    <include>
+      <user id="kendall_rc">
+        <params>
+          <param name="password" value="clave123"/>
+          <param name="vm-password" value="1000"/>
+          <param name="accountcode" value="1000"/>
+          <param name="effective_caller_id_name" value="Kendall Rodriguez"/>
+          <param name="effective_caller_id_number" value="83340"/>
+          <param name="outbound_caller_id_name" value="$${outbound_caller_name}"/>
+          <param name="outbound_caller_id_number" value="$${outbound_caller_number}"/>
+          <param name="callgroup" value="techsupport"/>
+        </params>
+        <variables>
+          <variable name="toll_allow" value="domestic,international,local"/>
+          <variable name="accountcode" value="1000"/>
+          <variable name="user_context" value="default"/>
+          <variable name="effective_caller_id_name" value="Kendall Rodriguez"/>
+          <variable name="effective_caller_id_number" value="83340"/>
+          <variable name="outbound_caller_id_name" value="$${outbound_caller_name}"/>
+          <variable name="outbound_caller_id_number" value="$${outbound_caller_number}"/>
+          <variable name="callgroup" value="techsupport"/>
+        </variables>
+      </user>
+
+      <user id="joselyn_mr">
+        <params>
+          <param name="password" value="clave456"/>
+          <param name="vm-password" value="1001"/>
+          <param name="accountcode" value="1001"/>
+          <param name="effective_caller_id_name" value="Joselyn Montero"/>
+          <param name="effective_caller_id_number" value="83341"/>
+          <param name="outbound_caller_id_name" value="$${outbound_caller_name}"/>
+          <param name="outbound_caller_id_number" value="$${outbound_caller_number}"/>
+          <param name="callgroup" value="techsupport"/>
+        </params>
+        <variables>
+          <variable name="toll_allow" value="domestic,international,local"/>
+          <variable name="accountcode" value="1001"/>
+          <variable name="user_context" value="default"/>
+          <variable name="effective_caller_id_name" value="Joselyn Montero"/>
+          <variable name="effective_caller_id_number" value="83341"/>
+          <variable name="outbound_caller_id_name" value="$${outbound_caller_name}"/>
+          <variable name="outbound_caller_id_number" value="$${outbound_caller_number}"/>
+          <variable name="callgroup" value="techsupport"/>
+        </variables>
+      </user>
+
+      <user id="brandon_lz">
+        <params>
+          <param name="password" value="clave789"/>
+          <param name="vm-password" value="1002"/>
+          <param name="accountcode" value="1002"/>
+          <param name="effective_caller_id_name" value="Brandon Lopez"/>
+          <param name="effective_caller_id_number" value="83342"/>
+          <param name="outbound_caller_id_name" value="$${outbound_caller_name}"/>
+          <param name="outbound_caller_id_number" value="$${outbound_caller_number}"/>
+          <param name="callgroup" value="techsupport"/>
+        </params>
+        <variables>
+          <variable name="toll_allow" value="domestic,international,local"/>
+          <variable name="accountcode" value="1002"/>
+          <variable name="user_context" value="default"/>
+          <variable name="effective_caller_id_name" value="Brandon Lopez"/>
+          <variable name="effective_caller_id_number" value="83342"/>
+          <variable name="outbound_caller_id_name" value="$${outbound_caller_name}"/>
+          <variable name="outbound_caller_id_number" value="$${outbound_caller_number}"/>
+          <variable name="callgroup" value="techsupport"/>
+        </variables>
+      </user>
+    </include>
+
+  # Dialplan con tu canción
+  default.xml: |
+    <include>
+        <extension name="call-dylan">
+            <condition field="destination_number" expression="^(83341|83342|83340)$">
+            <action application="answer"/>
+            <action application="playback" data="ivr/8000/ivr-welcome_to_freeswitch.wav"/>
+            <action application="hangup"/>
+            </condition>
+        </extension>
+    </include>

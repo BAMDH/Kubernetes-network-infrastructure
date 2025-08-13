@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: freeswitch
+  namespace: privado
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: freeswitch
+  template:
+    metadata:
+      labels:
+        app: freeswitch
+    spec:
+      containers:
+        - name: freeswitch
+          image: safarov/freeswitch
+          ports:
+            - containerPort: 5060
+              protocol: UDP
+            - containerPort: 5080
+              protocol: UDP
+            - containerPort: 8021
+              protocol: TCP
+          env:
+            - name: SOUND_RATES
+              value: "8000:16000"
+            - name: SOUND_TYPES
+              value: "music:en-us-callie"
+          volumeMounts:
+            - name: freeswitch-config-volume
+              mountPath: /etc/freeswitch/autoload_configs/event_socket.conf.xml
+              subPath: event_socket.conf.xml
+            - name: freeswitch-config-volume
+              mountPath: /etc/freeswitch/directory/default/users.xml
+              subPath: users.xml
+            - name: freeswitch-config-volume
+              mountPath: /etc/freeswitch/dialplan/default/default.xml
+              subPath: default.xml
+      volumes:
+        - name: freeswitch-config-volume
+          configMap:
+            name: freeswitch-config
