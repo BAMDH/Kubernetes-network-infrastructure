@@ -61,7 +61,7 @@ data:
           <param name="password" value="clave789"/>
           <param name="vm-password" value="1002"/>
           <param name="accountcode" value="1002"/>
-          <param name="effective_caller_id_name" value="Brandon Lopez"/>
+          <param name="effective_caller_id_name" value="Brandon Mora"/>
           <param name="effective_caller_id_number" value="83342"/>
           <param name="outbound_caller_id_name" value="$${outbound_caller_name}"/>
           <param name="outbound_caller_id_number" value="$${outbound_caller_number}"/>
@@ -71,7 +71,7 @@ data:
           <variable name="toll_allow" value="domestic,international,local"/>
           <variable name="accountcode" value="1002"/>
           <variable name="user_context" value="default"/>
-          <variable name="effective_caller_id_name" value="Brandon Lopez"/>
+          <variable name="effective_caller_id_name" value="Brandon Mora"/>
           <variable name="effective_caller_id_number" value="83342"/>
           <variable name="outbound_caller_id_name" value="$${outbound_caller_name}"/>
           <variable name="outbound_caller_id_number" value="$${outbound_caller_number}"/>
@@ -80,7 +80,7 @@ data:
       </user>
     </include>
 
-  # Dialplan con tu canción
+  # Dialplan
   default.xml: |
     <include>
         <extension name="call-dylan">

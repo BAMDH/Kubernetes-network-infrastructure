@@ -8,15 +8,23 @@ spec:
   selector:
     app: freeswitch
   ports:
-    - name: sip
-      protocol: UDP
-      port: 5060
-      targetPort: 5060
-    - name: sip-alt
-      protocol: UDP
-      port: 5080
-      targetPort: 5080
-    - name: esl
-      protocol: TCP
-      port: 8021
-      targetPort: 8021
+  - name: sip-udp
+    protocol: UDP
+    port: 5060
+    targetPort: 5060
+  - name: sip-alt-udp
+    protocol: UDP
+    port: 5080
+    targetPort: 5080
+  - name: esl
+    protocol: TCP
+    port: 8021
+    targetPort: 8021
+  - name: sip-tcp
+    protocol: TCP
+    port: 5060
+    targetPort: 5060
+  - name: sip-alt-tcp
+    protocol: TCP
+    port: 5080
+    targetPort: 5080
