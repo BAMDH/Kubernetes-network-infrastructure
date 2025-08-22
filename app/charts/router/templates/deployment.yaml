@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deploymentName }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.deploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.deploymentName }}
+    spec:
+      containers:
+      - name: {{ .Values.deploymentName }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        securityContext:
+          privileged: true
+        
+        ports:
+{{- range .Values.ports }}
+          - containerPort: {{ .containerPort }}
+{{- end }}
+        command:
+          - /bin/bash
+          - -c
+          - |
+            nft add table ip nat && \
+            nft add chain ip nat prerouting { type nat hook prerouting priority 0 \; } && \
+            nft add chain ip nat postrouting { type nat hook postrouting priority 100 \; } && \
+            nft add chain ip nat output { type nat hook output priority 0 \; } && \
+            {{- range .Values.ports }}
+            nft add rule ip nat output tcp dport {{ .containerPort }} dnat {{ .forwardTo }}
+            {{- end }}
+            nft list ruleset &&
+            tail -f /dev/null
