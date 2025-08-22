@@ -42,7 +42,7 @@ En este namespace se alojan los servicios internos que no deben ser accesibles d
 NGINX 1 es un servidor web simple que, al ser accedido, muestra el mensaje `"Hola NGINX1"`.  
 Para su implementación en Kubernetes se realizaron los siguientes pasos:  
 - Se creó un **Deployment** con una réplica del pod que corre NGINX 1, utilizando la imagen **nginx:alpine**.  
-- Se definió un **Service de tipo ClusterIP** para permitir la comunicación interna dentro del clúster.  
+- Se definió un **Service** de tipo ClusterIP para permitir la comunicación interna dentro del clúster.  
 - Se creó un **ConfigMap** para establecer la configuración del HTML que se servirá.  
 - Este ConfigMap se montó como un **volumen** dentro del Deployment, de modo que el contenedor pueda leer y servir el contenido correcto del sitio web.
 
@@ -51,36 +51,46 @@ Para su implementación en Kubernetes se realizaron los siguientes pasos:
 NGINX 2 tiene la misma estructura y propósito que NGINX 1, mostrando el mensaje `"Hola NGINX2"`.  
 Su implementación también incluyó:  
 - **Deployment** con una réplica, utilizando la imagen **nginx:alpine**.  
-- **Service de tipo ClusterIP**.  
+- **Service** de tipo ClusterIP.  
 - **ConfigMap** para la configuración del HTML.  
 - Montaje del ConfigMap como **volumen** en el Deployment, garantizando que el contenedor pueda servir la página correctamente.
 
 #### FreeSWITCH
-FreeSWITCH es un servicio de telefonía IP que utiliza el protocolo **SIP (Session Initiation Protocol)** sobre los transportes **UDP** y **TCP**. Este servicio permite crear extensiones telefónicas, realizar llamadas entre ellas y simular un entorno de central telefónica. Es fundamental configurar correctamente los puertos requeridos para garantizar su funcionamiento dentro del clúster.
+FreeSWITCH es un servicio de telefonía IP que utiliza el protocolo **SIP (Session Initiation Protocol)** sobre los transportes **UDP** y **TCP**. Este servicio permite crear extensiones telefónicas, realizar llamadas entre ellas y simular un entorno de central telefónica dentro del clúster.  
+
+Para su implementación en Kubernetes se realizaron los siguientes pasos:  
+- Se creó un **Deployment** utilizando la imagen **safarov/freeswitch**.  
+- Se definió un **ConfigMap** que contiene la configuración necesaria para los usuarios en el archivo `users.xml`, el `dialplan.xml` para los sonidos y el archivo `event_socket.conf.xml` para que freeswitch escuche en todas las interfaces de red disponibles.
+- Este ConfigMap se montó como un **volumen** dentro del Deployment, de manera que el contenedor pueda cargar la configuración correctamente al iniciar.  
+- Se creó un **Service** de tipo ClusterIP para exponer FreeSWITCH dentro del clúster y pueda comunicarse con otros pods dentro del cluster.  
+
+El servicio de FreeSWITCH escucha en el puerto **5060** tanto en **UDP** como en **TCP**, permitiendo así el funcionamiento del protocolo SIP para llamadas y comunicaciones entre extensiones.
 
 ---
 
-## ⚙️ Herramientas
+## Herramientas
 
-Para implementar los servicios utilizamos **Helm**, que permite definir la infraestructura como código.  
-Esto facilita el despliegue en kubernetes y ayuda a mantener la configuración organizada y reutilizable.
+Para implementar los servicios se utilizó **Helm**, una herramienta que permite definir la infraestructura como código.  
+Esto no solo simplifica el despliegue en Kubernetes, sino que también asegura que la configuración sea consistente, fácil de mantener y reutilizable en distintos entornos.
 
----
-
-## 📞 FreeSWITCH
-
-**FreeSWITCH** es una plataforma para telefonía IP.  
-- Usa el protocolo **SIP** (Session Initiation Protocol)  
-- Trabaja sobre **UDP** y **TCP**  
-
-### Lo que haremos con FreeSWITCH
-1. Crear extensiones SIP.  
-2. Configurar un cliente softphone (hay opciones para iOS, Android y escritorio).  
-3. Realizar llamadas de prueba entre extensiones.  
 
 ---
 
-## 🔗 Recursos de Apoyo
+## Instalación
+
+Para desplegar todos los servicios del proyecto en Kubernetes, simplemente se ejecuta el siguiente comando de Helm:
+
+```bash
+helm install app app
+```
+
+Con este comando se crea automáticamente toda la infraestructura definida en el chart, incluyendo Deployments, Services, ConfigMaps y demás recursos necesarios.
+Una vez finalizado, los servicios quedarán listos para ser utilizados sin necesidad de configuraciones adicionales.
+
+
+---
+
+## Recursos de Apoyo
 - [Documentación oficial de FreeSWITCH](https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Introduction/)  
 - [Helm - sitio oficial](https://helm.sh/docs/)  
 - [Kubernetes - documentación oficial](https://kubernetes.io/docs/)  
