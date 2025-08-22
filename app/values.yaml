@@ -1,8 +1,8 @@
 freeswitch:
-  enabled: false
+  enabled: true
 ingress_controller:
   enabled: false
 nginx:
-  enabled: true
+  enabled: false
 router:
-  enabled: true
+  enabled: false

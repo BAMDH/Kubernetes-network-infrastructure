@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.nginx1.name }}-deployment
-  namespace: privado
+  namespace: {{ Values.nginx1.namespace }}
 spec:
   replicas: {{ .Values.nginx1.replicas }}
   selector:
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: {{ .Values.nginx1.name }}
-        image: nginx:alpine
+        image: {{ .Values.nginx1.image }}
         ports:
         - containerPort: {{ .Values.nginx1.port }}
         volumeMounts:

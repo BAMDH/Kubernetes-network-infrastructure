@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: freeswitch-config
-  namespace: privado
+  name: {{ .Values.freeswitch.name }}-config
+  namespace: {{ .Values.freeswitch.namespace }}
 data:
   event_socket.conf.xml: |
     <param name="listen-ip" value="0.0.0.0"/>

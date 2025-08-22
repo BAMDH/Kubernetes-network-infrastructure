@@ -1,27 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: freeswitch
-  namespace: privado
+  name: {{ .Values.freeswitch.name }}-deployment
+  namespace: {{ .Values.freeswitch.namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: freeswitch
+      app: {{ .Values.freeswitch.name }}
   template:
     metadata:
       labels:
-        app: freeswitch
+        app: {{ .Values.freeswitch.name }}
     spec:
       containers:
-        - name: freeswitch
-          image: safarov/freeswitch
+        - name: {{ .Values.freeswitch.name }}
+          image: {{ .Values.freeswitch.image }}
           ports:
-            - containerPort: 5060
+            - name: sip-udp
+              containerPort: 5060
               protocol: UDP
-            - containerPort: 5080
+            - name: sip-alt-udp
+              containerPort: 5080
               protocol: UDP
-            - containerPort: 8021
+            - name: esl
+              containerPort: 8021
+              protocol: TCP
+            - name: sip-tcp
+              containerPort: 5060
+              protocol: TCP
+            - name: sip-alt-tcp
+              containerPort: 5080
               protocol: TCP
           env:
             - name: SOUND_RATES
@@ -29,16 +38,16 @@ spec:
             - name: SOUND_TYPES
               value: "music:en-us-callie"
           volumeMounts:
-            - name: freeswitch-config-volume
+            - name: {{ .Values.freeswitch.name }}-config-volume
               mountPath: /etc/freeswitch/autoload_configs/event_socket.conf.xml
               subPath: event_socket.conf.xml
-            - name: freeswitch-config-volume
+            - name: {{ .Values.freeswitch.name }}-config-volume
               mountPath: /etc/freeswitch/directory/default/users.xml
               subPath: users.xml
-            - name: freeswitch-config-volume
+            - name: {{ .Values.freeswitch.name }}-config-volume
               mountPath: /etc/freeswitch/dialplan/default/default.xml
               subPath: default.xml
       volumes:
-        - name: freeswitch-config-volume
+        - name: {{ .Values.freeswitch.name }}-config-volume
           configMap:
-            name: freeswitch-config
+            name: {{ .Values.freeswitch.name }}-config
