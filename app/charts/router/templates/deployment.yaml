@@ -24,18 +24,24 @@ spec:
 {{- range .Values.ports }}
           - containerPort: {{ .containerPort }}
 {{- end }}
+
         command:
           - /bin/bash
           - -c
           - |
+            #tablas
             nft add table ip nat
+
+            #cadenas maneja redireccion
             nft add chain ip nat prerouting '{ type nat hook prerouting priority 0 ; }'
             nft add chain ip nat postrouting '{ type nat hook postrouting priority 100 ; }'
             nft add chain ip nat output '{ type nat hook output priority 0 ; }'
+           
+            #reglas
+            nft add rule ip nat postrouting oifname "eth0" masquerade
             {{- range .Values.ports }}
-            nft add rule ip nat prerouting tcp dport {{ .containerPort }} dnat {{ .forwardTo }}
-
-            nft add rule ip nat output tcp dport {{ .containerPort }} dnat {{ .forwardTo }}
+            nft add rule ip nat prerouting tcp dport {{ .containerPort }} dnat to {{ .forwardTo }}
+            nft add rule ip nat output tcp dport {{ .containerPort }} dnat to {{ .forwardTo }}
             {{- end }}
             nft list ruleset
             tail -f /dev/null

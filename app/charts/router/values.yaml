@@ -12,11 +12,9 @@ ports:
   #nginx1
   - containerPort: 8080
     servicePort: 8080
-    nodePort: 30080
     forwardTo: nginx1-service.privado.svc.cluster.local:80
   #nginx2
   - containerPort: 8081
     servicePort: 8081
-    nodePort: 30081
     forwardTo: nginx2-service.privado.svc.cluster.local:80
 replicas: 1

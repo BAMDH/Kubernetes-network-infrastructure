@@ -35,7 +35,7 @@ metadata:
 data:
   index.html: |
     <html>
-    <head><title>Nginx 1</title></head>
+    <head><title>Nginx 2</title></head>
     <body>
       <h1>Hola NGINX2</h1>
     </body>
