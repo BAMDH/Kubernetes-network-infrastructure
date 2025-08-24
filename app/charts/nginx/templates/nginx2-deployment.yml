@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.nginx2.name }}-deployment
-  namespace: {{ Values.nginx2.namespace }}
+  namespace: {{ .Values.nginx2.namespace }}
 spec:
-  replicas: {{ .Values.nginx2.replicas }}
+  replicas: {{ .Values.nginx2.replicaCount }}
   selector:
     matchLabels:
       app: {{ .Values.nginx2.name }}

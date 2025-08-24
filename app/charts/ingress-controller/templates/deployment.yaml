@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}-deployment
+  namespace: {{ .Values.namespace.public }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      containers:
+        - name: {{ .Values.name }}
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - name: apache-conf
+              mountPath: /usr/local/apache2/conf/httpd.conf
+              subPath: httpd.conf
+            - name: apache-vhost
+              mountPath: /usr/local/apache2/conf/extra/httpd-vhosts.conf
+              subPath: httpd-vhosts.conf
+      volumes:
+        - name: apache-conf
+          configMap:
+            name: {{ .Values.name }}-config
+        - name: apache-vhost
+          configMap:
+            name: {{ .Values.name }}-vhost
