@@ -5,34 +5,43 @@ metadata:
   namespace: {{ .Values.namespace.public }}
 data:
   httpd.conf: |
+    # Nivel de logs (debug + proxy:trace8 da información detallada de proxy)
+    LogLevel debug proxy:trace8
+
     ServerRoot "/usr/local/apache2"
+
+    # Puerto de escucha
     Listen 80
+
+    # Cargar módulos necesarios
     LoadModule mpm_event_module modules/mod_mpm_event.so
     LoadModule authn_core_module modules/mod_authn_core.so
     LoadModule authz_core_module modules/mod_authz_core.so
     LoadModule proxy_module modules/mod_proxy.so
     LoadModule proxy_http_module modules/mod_proxy_http.so
+    LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so
+    LoadModule log_config_module modules/mod_log_config.so
+    LoadModule rewrite_module modules/mod_rewrite.so
+    LoadModule unixd_module modules/mod_unixd.so
 
-    ServerName localhost
+    # Configuración general del servidor
+    ServerName localhost:80
+    ErrorLog /proc/self/fd/2
+    CustomLog /proc/self/fd/1 common
 
-    # Include VirtualHosts
-    Include conf/extra/httpd-vhosts.conf
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Values.name }}-vhost
-  namespace: {{ .Values.namespace.public }}
-data:
-  httpd-vhosts.conf: |
+    # VirtualHost principal (escucha en el puerto 80)
     <VirtualHost *:80>
-        ProxyRequests Off
+        ProxyRequests Off   # No permite que el servidor funcione como proxy abierto
         ProxyPreserveHost On
 
         # Redirigir según path
-        ProxyPass "/Nginx1/" "http://nginx1-service.{{ .Values.namespace.private }}.svc.cluster.local/"
-        ProxyPassReverse "/Nginx1/" "http://nginx1-service.{{ .Values.namespace.private }}.svc.cluster.local/"
+        ProxyPassMatch "^/Nginx1(.*)$" "http://nginx1-service.{{ .Values.namespace.private }}.svc.cluster.local/$1"
+        ProxyPassReverse "/Nginx1" "http://nginx1-service.{{ .Values.namespace.private }}.svc.cluster.local/"
 
-        ProxyPass "/Nginx2/" "http://nginx2-service.{{ .Values.namespace.private }}.svc.cluster.local/"
-        ProxyPassReverse "/Nginx2/" "http://nginx2-service.{{ .Values.namespace.private }}.svc.cluster.local/"
+        ProxyPassMatch "^/Nginx2(.*)$" "http://nginx2-service.{{ .Values.namespace.private }}.svc.cluster.local/$1"
+        ProxyPassReverse "/Nginx2" "http://nginx2-service.{{ .Values.namespace.private }}.svc.cluster.local/"
+
+        ErrorLog /proc/self/fd/2
+        CustomLog /proc/self/fd/1 combined
     </VirtualHost>
+
