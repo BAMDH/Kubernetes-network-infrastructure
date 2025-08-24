@@ -8,21 +8,30 @@ image:
   #sirve para indicar las veces que se descarga la imagen, en este caso solamente si no está presente
   pullPolicy: IfNotPresent
 
-#puertos TCP
+
 ports:
   #nginx1
   - containerPort: 8080
     servicePort: 8080
     nodePort: 30080
+    protocol: TCP
     forwardTo: nginx1-service.privado.svc.cluster.local:80
   #nginx2
   - containerPort: 8081
     servicePort: 8081
     nodePort: 30081
+    protocol: TCP
     forwardTo: nginx2-service.privado.svc.cluster.local:80
-  #freewsitch 
+  #freewsitch  
   - containerPort: 9090
     servicePort: 9090
     nodePort: 30083
+    protocol: TCP
+    forwardTo: freeswitch.privado.svc.cluster.local:5060
+
+  - containerPort: 9091
+    servicePort: 9091
+    nodePort: 30086
+    protocol: UDP
     forwardTo: freeswitch.privado.svc.cluster.local:5060
 replicas: 1

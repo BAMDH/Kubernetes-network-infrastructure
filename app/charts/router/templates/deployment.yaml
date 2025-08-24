@@ -23,6 +23,7 @@ spec:
         ports:
 {{- range .Values.ports }}
           - containerPort: {{ .containerPort }}
+            protocol: {{ .protocol }}
 {{- end }}
 
         command:
@@ -46,8 +47,10 @@ spec:
 
 
             {{- range .Values.ports }}
-            nft add rule ip nat prerouting tcp dport {{ .containerPort }} dnat to {{ .forwardTo }}
-            nft add rule ip nat output tcp dport {{ .containerPort }} dnat to {{ .forwardTo }}
+            nft add rule ip nat prerouting {{ .protocol | lower }} dport {{ .containerPort }} dnat to {{ .forwardTo }}
+            nft add rule ip nat output {{ .protocol | lower }} dport {{ .containerPort }} dnat to {{ .forwardTo }}
             {{- end }}
+
+          
             nft list ruleset
             tail -f /dev/null

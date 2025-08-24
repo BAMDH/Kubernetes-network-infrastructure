@@ -12,5 +12,6 @@ spec:
     - name: http{{ .containerPort }}
       port: {{ .servicePort }}
       targetPort: {{ .containerPort }}
+      protocol: {{ .protocol }}
       nodePort: {{ .nodePort }}
 {{- end }}
