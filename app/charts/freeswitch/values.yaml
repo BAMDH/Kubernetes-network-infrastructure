@@ -2,4 +2,4 @@ freeswitch:
   name: freeswitch
   namespace: privado
   image: safarov/freeswitch
-  service: NodePort
+  service: ClusterIP
