@@ -35,11 +35,11 @@ data:
         ProxyPreserveHost On
 
         # Redirigir según path
-        ProxyPassMatch "^/Nginx1(.*)$" "http://nginx1-service.{{ .Values.namespace.private }}.svc.cluster.local/$1"
-        ProxyPassReverse "/Nginx1" "http://nginx1-service.{{ .Values.namespace.private }}.svc.cluster.local/"
+        ProxyPass /Nginx1 http://nginx1-service.{{ .Values.namespace.private }}.svc.cluster.local/
+        ProxyPassReverse /Nginx1 http://nginx1-service.{{ .Values.namespace.private }}.svc.cluster.local/
 
-        ProxyPassMatch "^/Nginx2(.*)$" "http://nginx2-service.{{ .Values.namespace.private }}.svc.cluster.local/$1"
-        ProxyPassReverse "/Nginx2" "http://nginx2-service.{{ .Values.namespace.private }}.svc.cluster.local/"
+        ProxyPass /Nginx2 http://nginx2-service.{{ .Values.namespace.private }}.svc.cluster.local/
+        ProxyPassReverse /Nginx2 http://nginx2-service.{{ .Values.namespace.private }}.svc.cluster.local/
 
         ErrorLog /proc/self/fd/2
         CustomLog /proc/self/fd/1 combined
