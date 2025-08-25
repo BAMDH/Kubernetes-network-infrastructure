@@ -22,16 +22,22 @@ ports:
     nodePort: 30081
     protocol: TCP
     forwardTo: nginx2-service.privado.svc.cluster.local:80
+  #ingress controller
+  - containerPort: 80
+    servicePort: 80
+    nodePort: 30083
+    protocol: TCP
+    forwardTo: ingress-controller-service.publico.svc.cluster.local:80
   #freewsitch  
   - containerPort: 9090
     servicePort: 9090
-    nodePort: 30083
+    nodePort: 30084
     protocol: TCP
     forwardTo: freeswitch.privado.svc.cluster.local:5060
 
   - containerPort: 9091
     servicePort: 9091
-    nodePort: 30086
+    nodePort: 30085
     protocol: UDP
     forwardTo: freeswitch.privado.svc.cluster.local:5060
 replicas: 1
