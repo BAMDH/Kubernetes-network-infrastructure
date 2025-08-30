@@ -17,8 +17,12 @@ Su función principal es redirigir el tráfico entrante hacia los distintos serv
 
 
 ### Ingress Controller
+Un Ingress Controller es un componente de Kubernetes que funciona como un proxy inverso y un punto de entrada para el tráfico HTTP externo al clúster. Su responsabilidad principal es inspeccionar las peticiones entrantes y, basándose en reglas predefinidas, redirigirlas a los servicios internos correctos. En este proyecto, el Ingress Controller se implementa utilizando Apache HTTP Server, para esto se realizaron los siguientes pasos:
+- Se creó un Deployment utilizando la imagen de Apache HTTP Server.
+- Se definió un ConfigMap que contiene el archivo de configuración principal de Apache (httpd.conf), acá se establecen los puertos, el ServerName, y las reglas de enrutamiento para el tráfico entrante.
+  - En este archivo se configuraron los módulos necesarios y la salida de logs para integrarse con el sistema de logging de Kubernetes.
+  - También se definió un bloque <VirtualHost *:80> como punto de entrada de todas las peticiones, donde se ajustaron parámetros de seguridad y se añadieron reglas de proxy para redirigir el tráfico hacia los servicios internos `nginx1-service` y `nginx2-service`.
 
-El Ingress Controller se implementa utilizando Apache Server y tiene como responsabilidad redirigir las peticiones HTTP en función de la URL solicitada.  
 En esta configuración, cuando un cliente accede a `http://127.0.0.1:80/Nginx1`, la solicitud se dirige hacia NGINX 1, mientras que si accede a `http://127.0.0.1:80/Nginx2`, la petición es redirigida hacia NGINX 2.
 
 
@@ -77,6 +81,14 @@ Una vez finalizado, los servicios quedarán listos para ser utilizados sin neces
 
 Para verificar el correcto funcionamiento de los distintos servicios del proyecto, se llevaron acabo diversas pruebas funcionales.
 
+## Ingress Controller
+Para verificar el correcto funcionamiento del Ingress Controller, se realizaron pruebas de redirección utilizando Postman, enviando solicitudes HTTP hacia las rutas configuradas y confirmando que el tráfico se redirigiera correctamente a los servicios internos correspondientes. A continuación se muestran las pruebas realizadas y sus respectivos resultados:
+
+| NGINX1     | NGINX2     |   Otro |
+|------------|------------|--------|
+| ![Resultado solicitud ruta nginx1](./images/Nginx1.png) | ![Resultado solicitud ruta nginx2](./images/Nginx2.png) | ![Resultado solicitud ruta x](./images/Otro.png)|
+
+Se puede observar que el ingress controller realiza las redirecciones a los servicios de ngnix correctamente, y que si no se le especifica el número de ngnix da error.
 
 ## FreeSwitch
 
@@ -110,6 +122,7 @@ Se establece la conexión con el número 83342, previamente registrado en el ser
 </center>
 
 # Conclusiones
+- El Ingress Controller se implementó exitosamente utilizando Apache HTTP Server como proxy inverso dentro del clúster de Kubernetes. Las reglas de redirección configuradas en httpd.conf funcionaron correctamente, dirigiendo el tráfico HTTP a los servicios internos nginx1-service y nginx2-service según la ruta solicitada. Las pruebas realizadas en Postman confirmaron que las solicitudes a /Nginx1 y /Nginx2 se enrutaron correctamente, garantizando que el tráfico externo llegue a los servicios internos de manera controlada y segura. La configuración implementada asegura que, en caso de rutas no definidas o errores en la solicitud, el sistema responde correctamente, evitando accesos no deseados o comportamiento inesperado.
 
 - FreeSWITCH se implementó exitosamente. Las pruebas funcionales demostraron que el servidor gestiona correctamente las llamadas entre los usuarios. Además, se verificó que los usuarios pueden registrarse en el servidor sin inconvenientes, que el enrutamiento de las llamadas se realiza de forma adecuada y que tanto los protocolos UDP como TCP funcionan correctamente en el mismo host y puerto. Esto confirma que la configuración del servidor y de los clientes SIP es estable y cumple con los objetivos del proyecto.
 
@@ -117,3 +130,5 @@ Se establece la conexión con el número 83342, previamente registrado en el ser
 - [Documentación oficial de FreeSWITCH](https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Introduction/)  
 - [Helm - sitio oficial](https://helm.sh/docs/)  
 - [Kubernetes - documentación oficial](https://kubernetes.io/docs/)  
+- [Apache Module mod_proxy](https://httpd.apache.org/docs/2.4/mod/mod_proxy.html)  
+- [How To Use Apache as a Reverse Proxy with mod_proxy on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-use-apache-as-a-reverse-proxy-with-mod_proxy-on-ubuntu-16-04#example-1-reverse-proxying-a-single-backend-server)
