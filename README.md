@@ -81,6 +81,32 @@ Una vez finalizado, los servicios quedarán listos para ser utilizados sin neces
 
 Para verificar el correcto funcionamiento de los distintos servicios del proyecto, se llevaron acabo diversas pruebas funcionales.
 
+## Router
+Para probar el correcto funcionamiento del router se dividirá en dos tipos de pruebas distintas, primero se probaran los puertos 30080 y 30081 los cuales están ligados a 8080 y 8081 respectivamente, el método a utilizar será el uso de la herramienta curl para obtener los datos html de las páginas Nginx. El segundo método es utilizar telnet para probar las conexiones a los puertos 30084 y 30085, los cuales son tcp y udp respectivamente y llevan al FreeSwitch. La prueba del Ingress Controller se unificó, por lo tanto se hará en el siguiente.
+### Primera Prueba:
+  <img src="./images/pruebaRouter1.png" width="400" height="300">
+
+Como es posible observar, ambos puertos funcionan correctamente y retornan los valores esperados. Por lo tanto el router funciona de la manera esperada.
+
+### Segunda Prueba:
+Esta ocupa unos pasos extra para poder probar la conectividad con telnet, empezando por establecer una conexión con el comando telnet localhost puerto.
+Primero se probará con el puerto 30085 que es UDP, el resultado esperado es que la conexión falle debido a que no hay handshake.
+
+<img src="./images/pruebaRouterTelnet1.png" width="600" height="50">
+
+Como se puede observar, esta es la respuesta esperada, sin embargo nos deja con la duda de si realmente sirve la conexion mediante protocolo UDP, por lo tanto se adjunta una prueba con microsip.
+
+<center>
+<img src="./images/pruebaRouterTelnet2.png" width="300" height="400">
+</center>
+Es posible apreciar el correcto funcionamiento del protocolo UDP, por lo tanto también del router.
+
+Ahora toca probar la TCP, cuando se ejecuta el comando telnet localhost 30084 se conecta pero no se puede observar información de la conexión, pero mediante el uso del comando netstat -an | findstr ESTABLISHED obtenemos el siguiente resultado:
+
+<img src="./images/pruebaRouterTelnet3.png" width="600" height="50">
+
+Lo que podemos observar es que se logró establecer una conexión TCP en el puerto 30084, lo cual demuestra el correcto funcionamiento del router.
+
 ## Ingress Controller
 Para verificar el correcto funcionamiento del Ingress Controller, se realizaron pruebas de redirección utilizando Postman, enviando solicitudes HTTP hacia las rutas configuradas y confirmando que el tráfico se redirigiera correctamente a los servicios internos correspondientes. A continuación se muestran las pruebas realizadas y sus respectivos resultados:
 
@@ -132,3 +158,5 @@ Se establece la conexión con el número 83342, previamente registrado en el ser
 - [Kubernetes - documentación oficial](https://kubernetes.io/docs/)  
 - [Apache Module mod_proxy](https://httpd.apache.org/docs/2.4/mod/mod_proxy.html)  
 - [How To Use Apache as a Reverse Proxy with mod_proxy on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-use-apache-as-a-reverse-proxy-with-mod_proxy-on-ubuntu-16-04#example-1-reverse-proxying-a-single-backend-server)
+- [Red Hat Documentation nftables](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/security_guide/chap-getting_started_with_nftables)
+- [Nftables wiki](https://wiki.nftables.org/wiki-nftables/index.php/Main_Page#Upgrading_from_xtables_to_nftables)
