@@ -149,6 +149,8 @@ Se establece la conexión con el número 83342, previamente registrado en el ser
 
 # Conclusiones
 
+- Los servidores Nginx se desplegaron exitosamente. Se configuró el archivo `index.html` mediante un ConfigMap, logrando que cada servidor muestre correctamente los mensajes personalizados: *"Hola NGINX1"* y *"Hola NGINX2"*.
+
 - El Ingress Controller se implementó exitosamente utilizando Apache HTTP Server como proxy inverso dentro del clúster de Kubernetes.  
 
 - Las reglas de redirección del Ingress Controller configuradas en `httpd.conf` funcionaron correctamente, dirigiendo el tráfico HTTP a los servicios internos `nginx1-service` y `nginx2-service` según la ruta solicitada.  
