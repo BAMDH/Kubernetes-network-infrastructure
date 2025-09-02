@@ -148,9 +148,20 @@ Se establece la conexión con el número 83342, previamente registrado en el ser
 </center>
 
 # Conclusiones
-- El Ingress Controller se implementó exitosamente utilizando Apache HTTP Server como proxy inverso dentro del clúster de Kubernetes. Las reglas de redirección configuradas en httpd.conf funcionaron correctamente, dirigiendo el tráfico HTTP a los servicios internos nginx1-service y nginx2-service según la ruta solicitada. Las pruebas realizadas en Postman confirmaron que las solicitudes a /Nginx1 y /Nginx2 se enrutaron correctamente, garantizando que el tráfico externo llegue a los servicios internos de manera controlada y segura. La configuración implementada asegura que, en caso de rutas no definidas o errores en la solicitud, el sistema responde correctamente, evitando accesos no deseados o comportamiento inesperado.
 
-- FreeSWITCH se implementó exitosamente. Las pruebas funcionales demostraron que el servidor gestiona correctamente las llamadas entre los usuarios. Además, se verificó que los usuarios pueden registrarse en el servidor sin inconvenientes, que el enrutamiento de las llamadas se realiza de forma adecuada y que tanto los protocolos UDP como TCP funcionan correctamente en el mismo host y puerto. Esto confirma que la configuración del servidor y de los clientes SIP es estable y cumple con los objetivos del proyecto.
+- El Ingress Controller se implementó exitosamente utilizando Apache HTTP Server como proxy inverso dentro del clúster de Kubernetes.  
+
+- Las reglas de redirección del Ingress Controller configuradas en `httpd.conf` funcionaron correctamente, dirigiendo el tráfico HTTP a los servicios internos `nginx1-service` y `nginx2-service` según la ruta solicitada.  
+
+- Las pruebas realizadas en Postman confirmaron que las solicitudes a `/Nginx1` y `/Nginx2` se enrutaron correctamente, garantizando que el tráfico externo llegue a los servicios internos de manera controlada y segura.  
+
+- La configuración implementada asegura que, en caso de rutas no definidas o errores en la solicitud, el sistema responde correctamente, evitando accesos no deseados o comportamiento inesperado.  
+
+- FreeSWITCH se implementó exitosamente y las pruebas funcionales demostraron que el servidor gestiona correctamente las llamadas entre los usuarios.  
+
+- Se verificó que los usuarios pueden registrarse en el servidor de FreeSwitch sin inconvenientes y que el enrutamiento de las llamadas se realiza de forma adecuada.  
+
+- Tanto los protocolos UDP como TCP funcionan correctamente en el mismo host y puerto para realizar llamadas en el servidor.  
 
 # Recursos de Apoyo
 - [Documentación oficial de FreeSWITCH](https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Introduction/)  
