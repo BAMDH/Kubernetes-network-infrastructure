@@ -23,8 +23,6 @@ Un Ingress Controller es un componente de Kubernetes que funciona como un proxy 
   - En este archivo se configuraron los módulos necesarios y la salida de logs para integrarse con el sistema de logging de Kubernetes.
   - También se definió un bloque <VirtualHost *:80> como punto de entrada de todas las peticiones, donde se ajustaron parámetros de seguridad y se añadieron reglas de proxy para redirigir el tráfico hacia los servicios internos `nginx1-service` y `nginx2-service`.
 
-En esta configuración, cuando un cliente accede a `http://127.0.0.1:80/Nginx1`, la solicitud se dirige hacia NGINX 1, mientras que si accede a `http://127.0.0.1:80/Nginx2`, la petición es redirigida hacia NGINX 2.
-
 
 ## Recursos en el Namespace Privado
 En este namespace se alojan los servicios internos que no deben ser accesibles directamente desde el exterior, garantizando así aislamiento y seguridad dentro del clúster.
@@ -114,7 +112,8 @@ Para verificar el correcto funcionamiento del Ingress Controller, se realizaron 
 |------------|------------|--------|
 | ![Resultado solicitud ruta nginx1](./images/Nginx1.png) | ![Resultado solicitud ruta nginx2](./images/Nginx2.png) | ![Resultado solicitud ruta x](./images/Otro.png)|
 
-Se puede observar que el ingress controller realiza las redirecciones a los servicios de ngnix correctamente, y que si no se le especifica el número de ngnix da error.
+Se puede observar que el ingress controller realiza las redirecciones a los servicios de ngnix correctamente, y que si no se le especifica el número de ngnix da error. Estos resultados también se pueden verificar en los logs generados por el servicio:
+<img src="./images/logsIngressController.jpg" width="600" height="50">
 
 ## FreeSwitch
 
@@ -158,6 +157,10 @@ Se establece la conexión con el número 83342, previamente registrado en el ser
 - Se recomienda definir distintos puertos en el router para las conexiones TCP y UDP a pesar de que se podría utilizar uno solo, esto es para evitar confuciones y tener un manejo más ordenado de las conexiones.
 
 - Se recomienda automatizar la creación de las reglas de nftables para que la implementación de nuevos puertos y conexiones sea sencilla y rápida.
+
+- Mantener los ConfigMaps en archivos separados por servicio (Apache, Nginx, FreeSWITCH) para mejorar la mantenibilidad y facilitar modificaciones futuras.
+
+- Configurar probes de liveness y readiness para cada servicio. Las liveness probes pueden reiniciar automáticamente los contenedores que se encuentren en un estado fallido, mientras que las readiness probes aseguran que el tráfico solo se envíe a los pods que estén listos para manejar solicitudes, lo que mejora la fiabilidad del servicio.
 
 
 
