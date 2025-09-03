@@ -113,7 +113,8 @@ Para verificar el correcto funcionamiento del Ingress Controller, se realizaron 
 | ![Resultado solicitud ruta nginx1](./images/Nginx1.png) | ![Resultado solicitud ruta nginx2](./images/Nginx2.png) | ![Resultado solicitud ruta x](./images/Otro.png)|
 
 Se puede observar que el ingress controller realiza las redirecciones a los servicios de ngnix correctamente, y que si no se le especifica el número de ngnix da error. Estos resultados también se pueden verificar en los logs generados por el servicio:
-<img src="./images/logsIngressController.jpg" width="600" height="50">
+<img src="./images/logsIngressController.jpg" width="100%" height="auto">
+Los logs de cuando se hace la solicitud a la ruta de ngnix1 están en el rectángulo azul, las de la ruta nginx2 en el morado y las de la ruta no definida están dentro del rectángulo rojo. Estos muestran que las solicitudes hacia /Nginx1 y /Nginx2 se redirigen correctamente a sus respectivos servicios internos, confirmando la resolución DNS dentro del clúster y el establecimiento de la conexión con los pods. Además, se evidencia que las rutas no definidas (como /Nginx) generan error, lo cual valida el correcto funcionamiento de las reglas de proxy.
 
 ## FreeSwitch
 
