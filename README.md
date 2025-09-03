@@ -147,6 +147,20 @@ Se establece la conexión con el número 83342, previamente registrado en el ser
   <img src="./images/call_microsip.png" alt="Imagen centrada" width="200" height="400">
 </center>
 
+# Recomendaciones
+
+- Para poder trabajar con CentOS es recomendable crear una imagen personalizada con las dependecias necesarias ya instaladas, debido a que los repositorios oficiales están caídos y es necesario agregar nuevos para poder utilizar yum.
+
+- Para probar el correcto funcionamiento de las nftables es recomendable hacerlo primero de manera local en el pod, esto se debe a que es más sencillo entender primero las reglas de direccionamiento y luego las de filtro necesarias para conectarse desde el exterior.
+
+- Para las reglas de filtrado en nftables es necesario entender cómo funcionan los servicios de kubernetes, ya que dependiendo del tipo puede ocupar reglas específicas. Por ejemplo, un servicio NodePort ocupa reglas para permitir forward, pero un servicio LoadBalancer no.
+
+- Se recomienda definir distintos puertos en el router para las conexiones TCP y UDP a pesar de que se podría utilizar uno solo, esto es para evitar confuciones y tener un manejo más ordenado de las conexiones.
+
+- Se recomienda automatizar la creación de las reglas de nftables para que la implementación de nuevos puertos y conexiones sea sencilla y rápida.
+
+
+
 # Conclusiones
 
 - Los servidores Nginx se desplegaron exitosamente. Se configuró el archivo `index.html` mediante un ConfigMap, logrando que cada servidor muestre correctamente los mensajes personalizados: *"Hola NGINX1"* y *"Hola NGINX2"*.
@@ -163,8 +177,16 @@ Se establece la conexión con el número 83342, previamente registrado en el ser
 
 - Se verificó que los usuarios pueden registrarse en el servidor de FreeSwitch sin inconvenientes y que el enrutamiento de las llamadas se realiza de forma adecuada.  
 
-- Tanto los protocolos UDP como TCP funcionan correctamente en el mismo host y puerto para realizar llamadas en el servidor.  
+- Tanto los protocolos UDP como TCP funcionan correctamente en el mismo host y puerto para realizar llamadas en el FreeSWITCH.
 
+- El router logra redireccionar los puertos 8080, 8081, 80 a Nginx1, Nginx2, Ingress Controller respectivamente, los demás puertos UDP y TCP redirigen al FreeSWITCH. Sin embargo este estandar es configurable,
+
+- Se ha automatizado la creación de la configuración de los puertos del router, incluyendo puerto dentro del mismo, destino y protocolo.
+
+
+
+# nft add rule ip nat output {{ .protocol | lower }} dport {{ .containerPort }} dnat to {{ .forwardTo }}
+           
 # Recursos de Apoyo
 - [Documentación oficial de FreeSWITCH](https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Introduction/)  
 - [Helm - sitio oficial](https://helm.sh/docs/)  
