@@ -147,28 +147,6 @@ Se establece la conexión con el número 83342, previamente registrado en el ser
   <img src="./images/call_microsip.png" alt="Imagen centrada" width="200" height="400">
 </center>
 
-# Recomendaciones
-
-- Se recomienda utilizar `values.yaml` en Helm charts para parametrizar configuraciones como réplicas, puertos, y nombres de servicios. Esto facilita la escalabilidad y personalización del sistema sin modificar directamente los manifests, permitiendo desplegar múltiples entornos de manera consistente y eficiente.
-
-- Para poder trabajar con CentOS es recomendable crear una imagen personalizada con las dependecias necesarias ya instaladas, debido a que los repositorios oficiales están caídos y es necesario agregar nuevos para poder utilizar yum.
-
-- Para probar el correcto funcionamiento de las nftables es recomendable hacerlo primero de manera local en el pod, esto se debe a que es más sencillo entender primero las reglas de direccionamiento y luego las de filtro necesarias para conectarse desde el exterior.
-
-- Para las reglas de filtrado en nftables es necesario entender cómo funcionan los servicios de kubernetes, ya que dependiendo del tipo puede ocupar reglas específicas. Por ejemplo, un servicio NodePort ocupa reglas para permitir forward, pero un servicio LoadBalancer no.
-
-- Se recomienda definir distintos puertos en el router para las conexiones TCP y UDP a pesar de que se podría utilizar uno solo, esto es para evitar confuciones y tener un manejo más ordenado de las conexiones.
-
-- Se recomienda automatizar la creación de las reglas de nftables para que la implementación de nuevos puertos y conexiones sea sencilla y rápida.
-
-- Mantener los ConfigMaps en archivos separados por servicio (Apache, Nginx, FreeSWITCH) para mejorar la mantenibilidad y facilitar modificaciones futuras.
-
-- Configurar probes de liveness y readiness para cada servicio. Las liveness probes pueden reiniciar automáticamente los contenedores que se encuentren en un estado fallido, mientras que las readiness probes aseguran que el tráfico solo se envíe a los pods que estén listos para manejar solicitudes, lo que mejora la fiabilidad del servicio.
-
-- Se recomienda utilizar la imagen safarov/freeswitch, ya que cuenta con una configuración por defecto optimizada que facilita el despliegue y la puesta en marcha del servidor.
-
-- Para realizar las pruebas de conexión con FreeSWITCH, se recomienda utilizar MicroSIP, dado que es una herramienta ligera, de fácil instalación y configuración, lo que facilita el proceso de validación del sistema.
-
 
 # Conclusiones
 
@@ -192,6 +170,27 @@ Se establece la conexión con el número 83342, previamente registrado en el ser
 
 - Se ha automatizado la creación de la configuración de los puertos del router, incluyendo puerto dentro del mismo, destino y protocolo.
 
+# Recomendaciones
+
+- Se recomienda utilizar `values.yaml` en Helm charts para parametrizar configuraciones como réplicas, puertos, y nombres de servicios. Esto facilita la escalabilidad y personalización del sistema sin modificar directamente los manifests, permitiendo desplegar múltiples entornos de manera consistente y eficiente.
+
+- Para poder trabajar con CentOS es recomendable crear una imagen personalizada con las dependecias necesarias ya instaladas, debido a que los repositorios oficiales están caídos y es necesario agregar nuevos para poder utilizar yum.
+
+- Para probar el correcto funcionamiento de las nftables es recomendable hacerlo primero de manera local en el pod, esto se debe a que es más sencillo entender primero las reglas de direccionamiento y luego las de filtro necesarias para conectarse desde el exterior.
+
+- Para las reglas de filtrado en nftables es necesario entender cómo funcionan los servicios de kubernetes, ya que dependiendo del tipo puede ocupar reglas específicas. Por ejemplo, un servicio NodePort ocupa reglas para permitir forward, pero un servicio LoadBalancer no.
+
+- Se recomienda definir distintos puertos en el router para las conexiones TCP y UDP a pesar de que se podría utilizar uno solo, esto es para evitar confuciones y tener un manejo más ordenado de las conexiones.
+
+- Se recomienda automatizar la creación de las reglas de nftables para que la implementación de nuevos puertos y conexiones sea sencilla y rápida.
+
+- Mantener los ConfigMaps en archivos separados por servicio (Apache, Nginx, FreeSWITCH) para mejorar la mantenibilidad y facilitar modificaciones futuras.
+
+- Configurar probes de liveness y readiness para cada servicio. Las liveness probes pueden reiniciar automáticamente los contenedores que se encuentren en un estado fallido, mientras que las readiness probes aseguran que el tráfico solo se envíe a los pods que estén listos para manejar solicitudes, lo que mejora la fiabilidad del servicio.
+
+- Se recomienda utilizar la imagen safarov/freeswitch, ya que cuenta con una configuración por defecto optimizada que facilita el despliegue y la puesta en marcha del servidor.
+
+- Para realizar las pruebas de conexión con FreeSWITCH, se recomienda utilizar MicroSIP, dado que es una herramienta ligera, de fácil instalación y configuración, lo que facilita el proceso de validación del sistema.
            
 # Recursos de Apoyo
 - [Documentación oficial de FreeSWITCH](https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Introduction/)  
