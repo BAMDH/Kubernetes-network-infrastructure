@@ -16,6 +16,7 @@ ports:
     nodePort: 30080
     protocol: TCP
     forwardTo: nginx1-service.privado.svc.cluster.local:80
+
   #nginx2
   - containerPort: 8081
     servicePort: 8081
